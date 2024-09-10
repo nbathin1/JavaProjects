@@ -12,6 +12,7 @@ public class Remainder {
     public Remainder(String title, LocalDateTime time, boolean isDone){
         this.title = title;
         this.time = time;
+        this.isDone = isDone;
     }
     public String getTitle(){
         return title;
@@ -32,7 +33,6 @@ public class Remainder {
         isDone = done;
     }
 
-    @Override
     public String toString(){
         return "Remainder {" + "title = " + title + " , time " + time + " , isDone = " + isDone + "}";
     }
