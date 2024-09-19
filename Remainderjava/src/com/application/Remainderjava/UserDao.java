@@ -65,7 +65,7 @@ public class UserDao implements DAO<User> {
 		var conn = DbConnection.instance().getConnection();
 		Optional<User> userOptional = Optional.empty();
 		try {
-			PreparedStatement pstmt = conn.prepareStatement("SELECT user_id FROM users WHERE username = ? AND password = ?");
+			PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM users WHERE user_name = ? AND password = ?");
 			pstmt.setString(1,t.getUser_name());
 			pstmt.setString(2, t.getPassword());
 			
@@ -73,7 +73,7 @@ public class UserDao implements DAO<User> {
 	        
 	        if (rs.next()) {
 	  
-	            User user = new User(rs.getInt("user_id"), rs.getString("username"), rs.getString("password"));
+	            User user = new User(rs.getInt("user_id"), rs.getString("user_name"), rs.getString("password"));
 	            userOptional = Optional.of(user);
 	        }
 
@@ -87,7 +87,7 @@ public class UserDao implements DAO<User> {
 	}
 
 	@Override
-	public List<User> getAll() {
+	public List<User> getAll(int t) {
 		return null;
 	}
 	

@@ -9,6 +9,6 @@ public interface DAO<T> {
 	void update(T t);
 	void delete(T t);
 	Optional <T> find(T t);
-	List<T> getAll();
+	List<T> getAll(int t);
 
 }
