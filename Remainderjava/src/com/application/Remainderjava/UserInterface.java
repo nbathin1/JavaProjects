@@ -1,73 +1,135 @@
 package com.application.Remainderjava;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Optional;
-import java.util.Scanner;
+
+public class UserInterface extends JFrame {
+    private static final long serialVersionUID = 1L;
+	private JTextField usernameField;
+    private JPasswordField passwordField;
+    private JButton createUserButton;
+    private JButton loginButton;
+    private JButton quitButton;
+    private UserDao userdao;
+
+    public void start() {
+
+        setTitle("User Login");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(null);
+
+        userdao = new UserDao();
 
 
-public class UserInterface {
+        JLabel userLabel = new JLabel("Username:");
+        userLabel.setBounds(50, 50, 100, 30);
+        add(userLabel);
 
-	private String choice;	
-	private User user;	
-	private UserDao userdao;
-	private Scanner sc;
-	
-    public UserInterface(Scanner sc) {
-    	this.sc = sc;
-        this.userdao = new UserDao();  
+        usernameField = new JTextField(20);
+        usernameField.setBounds(150, 50, 150, 30);
+        add(usernameField);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setBounds(50, 100, 100, 30);
+        add(passwordLabel);
+
+        passwordField = new JPasswordField(20);
+        passwordField.setBounds(150, 100, 150, 30);
+        add(passwordField);
+
+
+        createUserButton = new JButton("Create New User");
+        createUserButton.setBounds(50, 150, 150, 30);
+        add(createUserButton);
+
+
+        loginButton = new JButton("Login");
+        loginButton.setBounds(220, 150, 80, 30);
+        add(loginButton);
+
+ 
+        quitButton = new JButton("Quit");
+        quitButton.setBounds(150, 200, 100, 30);
+        add(quitButton);
+
+        setVisible(true);
+
+       
+        createUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                createNewUser();
+            }
+        });
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loginUser();
+            }
+        });
+
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0); 
+            }
+        });
     }
 
-	public void start() {
-			int i = 0;
-			while (i==0) {
-			     System.out.println("1. Create new User.....");
-			     System.out.println("2. User Login.....");
-			     System.out.println("3. Quit.....");
-			     
-			     choice = sc.nextLine().trim();
-			     
-			     switch(choice) {
-			     case "1": 
-			    	 user = new User();
-			    	 System.out.println("Enter new User_name....");
-			    	  user.setUser_name(sc.nextLine());
-			    	  System.out.println("Enter new Password....");
-			    	  user.setPassword(sc.nextLine());
-			    	  
-			    	  userdao.save(user);
-			    	  break;
-			    	  
-			     case "2":
-			    	 user = new User();
-			    	 System.out.println("Enter Your User_name....");
-			    	 user.setUser_name(sc.nextLine());
-			    	 System.out.println("Enter Your Password....");
-			    	 user.setPassword(sc.nextLine());
-			    	 
-			    	 Optional<User> foundUser = userdao.find(user);
-			    	 
-			         if (foundUser.isPresent()) {
-			             user = foundUser.get();
-			             System.out.println("User found: ID = " + user.getUser_id());
-			             RemainderManager rm = new RemainderManager(user,sc);
-			             rm.start();
-			             
-			         } else {
-			             System.out.println("User not found with the provided credentials.");
-			         }
-			         break;
-			    	 
-			     case "3":
-			    	 
-			    	 System.out.println("....Bye....");
-			    	 i=1;
-			    	 break;
-			    	 
-                 default:
-                     System.out.println("Invalid choice. Please try again.");
-                     break;
-			    	 
-			     }
-			     
-			 }
-	}
+
+    private void createNewUser() {
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in both fields.");
+            return;
+        }
+
+        User newUser = new User();
+        newUser.setUser_name(username);
+        newUser.setPassword(password);
+
+        userdao.save(newUser);
+        JOptionPane.showMessageDialog(this, "User created successfully!");
+
+        usernameField.setText("");
+        passwordField.setText("");
+    }
+
+    
+    private void loginUser() {
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+
+        if (username.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter your username and password.");
+            return;
+        }
+
+        User user = new User();
+        user.setUser_name(username);
+        user.setPassword(password);
+
+        Optional<User> foundUser = userdao.find(user);
+
+        if (foundUser.isPresent()) {
+            user = foundUser.get();
+            JOptionPane.showMessageDialog(this, "Login successful! User ID: " + user.getUser_id());
+
+            
+            new RemainderManager(user);
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid credentials. Please try again.");
+        }
+    }
+
+    
+    public static void main(String[] args) {
+        new UserInterface();
+    }
 }
