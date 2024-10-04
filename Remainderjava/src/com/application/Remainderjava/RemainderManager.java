@@ -42,7 +42,7 @@ public class RemainderManager extends JFrame {
         titleField.setBounds(150, 30, 200, 25);
         add(titleField);
 
-        JLabel timeLabel = new JLabel("Time (yyyy-MM-dd HH:mm):");
+        JLabel timeLabel = new JLabel("Time :");
         timeLabel.setBounds(30, 70, 200, 25);
         add(timeLabel);
 
