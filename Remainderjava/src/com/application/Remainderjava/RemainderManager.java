@@ -3,6 +3,7 @@ package com.application.Remainderjava;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -114,11 +115,18 @@ public class RemainderManager extends JFrame {
                 findRemainder();
             }
         });
-
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+            	DbConnection db = DbConnection.instance();
+                try {
+                    db.close(); // Close the database connection
+                    System.out.println("Database connection closed successfully.");
+                } catch (SQLException ex) {
+                    ex.printStackTrace(); // Handle any SQL exceptions
+                } finally {
+                    System.exit(0); // Exit the application
+                }
             }
         });
     }
